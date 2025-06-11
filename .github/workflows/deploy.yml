@@ -1,47 +1,40 @@
-name: Deploy to GitHub Pages
+name: Generate Snake
 
 on:
-  push:
-    branches:
-      - main  # or the branch you're deploying from
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  schedule:
+    - cron: "0 0 * * *"  # every day at midnight
+  workflow_dispatch:
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Generate Snake Animation
+        uses: Platane/snk@v3
         with:
-          node-version: 18
-
-      - name: Build your static site
-        run: |
-          npm install
-          npm run build  # make sure this generates your static content
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            dist/github-snake.svg
+            dist/github-snake-dark.svg?palette=github-dark
+            dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./dist  # path to your generated site
+          path: dist
 
   deploy:
+    needs: generate
     runs-on: ubuntu-latest
-    needs: build
+    permissions:
+      pages: write
+      id-token: write
     environment:
-      name: github-pages  # ✅ This line fixes the error
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: github-pages
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - name: Deploy GitHub Pages
         uses: actions/deploy-pages@v4
