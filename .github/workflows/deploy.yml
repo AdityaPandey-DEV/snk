@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: Platane/snk@master
+      - uses: AdityaPandey-DEV/snk@main
         with:
-          github_user_name: adityapandey-dev
+          github_user_name: AdityaPandey-DEV
           outputs: |
             dist/github-contribution-grid-snake.svg
       - uses: actions/upload-artifact@v4
