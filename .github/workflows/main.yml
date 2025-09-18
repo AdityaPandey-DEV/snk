@@ -132,8 +132,9 @@ jobs:
       - uses: actions/deploy-pages@v4
         if: success() && github.ref == 'refs/heads/main'
 
-      - run: bunx wrangler deploy
-        if: success() && github.ref == 'refs/heads/main'
-        working-directory: packages/github-user-contribution-service
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      # Temporarily disabled Cloudflare deployment due to token scoping issues
+      # - run: bunx wrangler deploy
+      #   if: success() && github.ref == 'refs/heads/main'
+      #   working-directory: packages/github-user-contribution-service
+      #   env:
+      #     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
